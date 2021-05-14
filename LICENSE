@@ -1,12 +1,29 @@
-  This program, including all files, images and data not otherwise
-  described below is Copyright 2021 by Jay L. Gischer. Use is permitted
-  under the Apache 2.0 license (see LicenseText.txt in the same directory
-  as this for details).
+Copyright 2021 Jay L, Gischer
 
-  Software used:
-  ---------------
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-  Meteor - Meteor is used under its Apache 2.0 license.  All subcomponents
-     of Meteor are also used under their licenses.
+http://www.apache.org/licenses/LICENSE-2.0
 
-  
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+
+
+Software used:
+---------------
+
+Meteor - Meteor is used under its Apache 2.0 license.  All subcomponents
+     of Meteor are also used under their licenses. Meteor's license can
+     been found at https://github.com/meteor/meteor/blob/devel/LICENSE
+
+
+fourseven:scss - This is distributed under the MIT License.  Details can
+    be found at https://github.com/Meteor-Community-Packages/meteor-scss/blob/master/LICENSE.txt
+
+bootstrap - This is distributed under the MIT License.  Details can be
+    found at https://www.npmjs.com/package/bootstrap#copyright-and-license

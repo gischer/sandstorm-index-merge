@@ -13,6 +13,7 @@ ecmascript-runtime-server@0.10.0
 ejson@1.1.1
 es5-shim@4.8.0
 fetch@0.1.1
+fourseven:scss@4.12.0
 html-tools@1.1.1
 htmljs@1.1.0
 inter-process-messaging@0.1.1
