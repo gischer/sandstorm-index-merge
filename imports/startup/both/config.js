@@ -1,4 +1,4 @@
 
 export const Config = {
-  localFileRoot: '/var/spk',
+  localFileRoot: '/var/www/var/spk',
 }
