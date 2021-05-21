@@ -20,10 +20,6 @@ import FS from 'fs';
 Meteor.methods({
   "sandstorm.initialize"() {
     SandstormInfo.remove({});
-    FS.stat('/opt/app/getPublicId', (err, stats) => {
-      if (err) console.log(err);
-      console.log(stats);
-    })
     const sandstormInfo = getSandstormInfo(this);
     const lines = getPublicId(sandstormInfo.sessionId);
     const lineA = lines.split('\n');
