@@ -2,4 +2,5 @@
 // e.g. useraccounts configuration file.
 import "./config";
 
+import "/imports/api/mainIndex";
 import "/imports/api/sandstorm";

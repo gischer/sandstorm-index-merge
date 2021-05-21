@@ -12,3 +12,13 @@ FlowRouter.route('/', {
     this.render("MainLayout", 'Home');
   },
 });
+
+
+import '/client/pages/sources/sources.js';
+
+FlowRouter.route('/sources', {
+  name: "Sources",
+  action() {
+    this.render("MainLayout", "Sources");
+  }
+});
