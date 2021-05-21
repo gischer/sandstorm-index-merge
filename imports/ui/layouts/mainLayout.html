@@ -8,9 +8,29 @@
         <h1>Confluence</h1>
       </div>
       <div class='row'>
-        <h2>A Sandstorm app index aggregator</h2>
+        <h2><i>A Sandstorm app index aggregator</i></h2>
       </div>
     </div>
-    {{>yield}}
+    <div class="row">
+      <div class='col-sm-2'>
+        <div class='nav flex-column'>
+          <li class="nav-item">
+            <a class='nav-link active' href='/'>Index</a>
+          </li>
+          <li class='nav-item'>
+            <a class='nav-link' href='/sources'>Sources</a>
+          </li>
+          <li class='nav-item'>
+            <a class='nav-link' href='/sources/source1Id'>Source 1</a>
+          </li>
+          <li class='nav-item'>
+            <a class='nav-link' href='/sources/source2Id'>Source 2</a>
+          </li>
+        </div>
+      </div>
+      <div class='col-sm-10'>
+        {{>yield}}
+      </div>
+    </div>
   </body>
 </template>
