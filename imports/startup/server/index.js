@@ -1,6 +1,6 @@
 // Import server startup through a single index entry point
 
-import './register-api.js';
+import '/imports/startup/both/index';
 import { exec } from 'child_process';
 
 if (Meteor.isServer) {

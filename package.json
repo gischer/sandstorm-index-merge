@@ -10,12 +10,14 @@
   "dependencies": {
     "@babel/runtime": "^7.11.2",
     "bootstrap": "^5.0.1",
-    "meteor-node-stubs": "^1.0.1"
+    "jquery": "^3.6.0",
+    "meteor-node-stubs": "^1.0.1",
+    "simpl-schema": "^1.12.0"
   },
   "meteor": {
     "mainModule": {
-      "client": "client/main.js",
-      "server": "server/main.js"
+      "client": "imports/startup/client/index.js",
+      "server": "imports/startup/server/index.js"
     },
     "testModule": "tests/main.js"
   }

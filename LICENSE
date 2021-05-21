@@ -31,3 +31,6 @@ bootstrap - This is distributed under the MIT License.  Details can be
 ostrio:flow-router-extra - Also known as veliovgroup/flowrouter.  This is distributed
     under the BSD 3-Claus "New" or "Revised" License.  Details can be found at
     https://github.com/veliovgroup/flow-router/blob/master/LICENSE
+
+gadicohen:headers - This is distributed under the GNU Lesser General Public License v3.0.
+    Details can be found at https://github.com/gadicc/meteor-headers/blob/master/LICENSE.txt
