@@ -8,6 +8,7 @@ sudo chown vagrant:vagrant /home/vagrant -R
 
 cd /opt/app
 meteor npm install --production
+rm -rf /home/vagrant/.bundle-garbage*
 meteor build --directory /home/vagrant/
 # Use npm and node from the Meteor dev bundle to install the bundle's dependencies.
 TOOL_VERSION=$(meteor show --ejson $(<.meteor/release) | grep '^ *"tool":' |
