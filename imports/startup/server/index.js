@@ -1,6 +1,10 @@
 // Import server startup through a single index entry point
 
 import '/imports/startup/both/index';
+import '/imports/api/mainIndex';
+import '/imports/api/sandstorm';
+import '/imports/api/sources';
+
 import { exec } from 'child_process';
 
 if (Meteor.isServer) {

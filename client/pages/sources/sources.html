@@ -1,3 +1,24 @@
 <template name='Sources'>
-  This is the sources template.
+  {{#if newSourceHasError}}
+    <div class='row'>
+      <span class='.text-danger'>{{newSourceErrorMessage}}</span>
+    </div>
+  {{/if}}
+  <div class='row mr-2'>
+    <div class='input-group mb-2'>
+      <div class='input-group-prepend'>
+        <span class='input-group-text'>Source Name</span>
+      </div>
+      <input type='text' class='form-control' id='new-source-name' placeholder="Some descriptive name of the source">
+      <button class='btn btn-primary' id='add-new-source'>Add Source</button>
+    </div>
+  </div>
+  <div class='row mr-2'>
+    <dl class='list-group'>
+    {{#each source in sources}}
+      <dt class='list-group-item'>{{source.name}}</dt>
+      <dd class='list-group-item'>Status: <i>{{source.downloadStatus}}</i>; Last Downloaded: <i>{{timeOf source}}</i></dd>
+    {{/each}}
+    </dl>
+  </div>
 </template>
