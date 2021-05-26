@@ -12,15 +12,23 @@ Template.Sources.onCreated(function() {
 
 Template.Sources.helpers({
   newSourceHasError() {
-    return this.newSourceErrorMessage.get() != "";
+    return Template.instance().newSourceErrorMessage.get() != "";
   },
 
   newSourceErrorMessage() {
-    return this.newSourceErrorMessage.get();
+    return Template.instance().newSourceErrorMessage.get();
   },
 
   sources() {
     return Sources.find().fetch();
+  },
+
+  status(source) {
+    if (source.status === 'Error') {
+      return `<a class='js-show-error-link' data-source-id=${source._id}>Error</a>`;
+    } else {
+      return source.status;
+    }
   },
 
   timeOf(source) {
@@ -37,19 +45,26 @@ Template.Sources.events({
     event.preventDefault();
     console.log('add-new-source clicked');
     collectClaimToken();
+  },
+
+  "click a.js-show-error-link"(event) {
+    const id = event.currentTarget.getAttribute('data-source-id');
+    const source = Sources.findOne(id);
+    alert(`${source.name} encountered an error while fetching: ${source.errorMessage}`)
   }
 })
 
 function collectClaimToken() {
   const name = document.getElementById("new-source-name").value;
-
+  console.log(`name is ${name}`)
   if (typeof name === 'undefined' || name.length == 0) {
     Template.instance().newSourceErrorMessage.set("A new source must be given a name that allows you to identify it");
+    return;
   } else {
     Template.instance().newSourceErrorMessage.set("");
   }
 
-  window.addEventListener("message", function (event) {
+  function handlePowerboxMessage(event) {
     if (event.source !== window.parent) {
       return;
     }
@@ -63,11 +78,12 @@ function collectClaimToken() {
       console.log(error);
       return;
     }
-    console.log(response)
     console.log(`calling sources.create with ${response.token}`);
-    const accessToken = Meteor.call("sources.create", response.token, name);
-    console.log(`accessToken is ${accessToken}`);
-  });
+    Meteor.call("sources.create", response.token, name);
+    window.removeEventListener("message", handlePowerboxMessage);
+  }
+
+  window.addEventListener("message", handlePowerboxMessage);
 
   window.parent.postMessage({
     powerboxRequest: {

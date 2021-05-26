@@ -1,7 +1,7 @@
 <template name='Sources'>
   {{#if newSourceHasError}}
     <div class='row'>
-      <span class='.text-danger'>{{newSourceErrorMessage}}</span>
+      <span class='text-danger'>{{newSourceErrorMessage}}</span>
     </div>
   {{/if}}
   <div class='row mr-2'>
@@ -17,7 +17,7 @@
     <dl class='list-group'>
     {{#each source in sources}}
       <dt class='list-group-item'>{{source.name}}</dt>
-      <dd class='list-group-item'>Status: <i>{{source.downloadStatus}}</i>; Last Downloaded: <i>{{timeOf source}}</i></dd>
+      <dd class='list-group-item'>Status: <i>{{{source.downloadStatus}}}</i>; Last Downloaded: <i>{{timeOf source}}</i></dd>
     {{/each}}
     </dl>
   </div>
