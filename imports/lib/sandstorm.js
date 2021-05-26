@@ -53,6 +53,8 @@ export function getAccessToken(source, info) {
           "requiredPermissions": [],
         }
     });
+  } else {
+    return Promise.resolve(true);
   }
 }
 
