@@ -22,3 +22,12 @@ FlowRouter.route('/sources', {
     this.render("MainLayout", "Sources");
   }
 });
+
+import '/client/pages/sources/show/show.js';
+
+FlowRouter.route('/sources/:id', {
+  name: "Show Source",
+  action(params) {
+    this.render("MainLayout", "ShowSource", params);
+  }
+})

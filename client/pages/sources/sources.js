@@ -3,7 +3,10 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 import { AppIndexRpcId, AppIndexDescriptor } from '/imports/lib/sandstorm';
 import { Sources } from '/imports/api/sources';
+
 import './sources.html';
+
+import '/imports/ui/components/navbar';
 
 Template.Sources.onCreated(function() {
   this.newSourceErrorMessage = new ReactiveVar("");
