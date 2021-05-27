@@ -35,5 +35,9 @@ ostrio:flow-router-extra - Also known as veliovgroup/flowrouter.  This is distri
 gadicohen:headers - This is distributed under the GNU Lesser General Public License v3.0.
     Details can be found at https://github.com/gadicc/meteor-headers/blob/master/LICENSE.txt
 
-axios - This is distributed under the MIT License Details can be found
+axios - This is distributed under the MIT License. Details can be found
     at https://github.com/axios/axios/blob/master/LICENSE
+
+ramda - This is distrubuted under the MIT License. Details can be found at
+  https://github.com/ramda/ramda/blob/master/LICENSE.txt
+  

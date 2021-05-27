@@ -19,3 +19,4 @@ gadicohen:headers
 blaze-html-templates
 jquery
 mongo
+ramda:ramda
