@@ -4,9 +4,16 @@
     {{>Navbar sources=sources}}
     </div>
     <div class='col-sm-10'>
-      <div class='row'>
+      <div class='row mb-4'>
         This app combines several Sandstorm App Indexes into a single one.
         That single one is available (to Sandstorm installations) at <a href={{indexUrl}}>{{indexUrl}}</a>
+      </div>
+      <div class='row'>
+        <dl class='list-group'>
+          {{#each app in apps}}
+            {{>DisplayApp app=app}}
+          {{/each}}
+        </dl>
       </div>
     </div>
   </div>

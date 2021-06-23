@@ -40,6 +40,13 @@ Template.ShowSource.events({
     }
     source.apps = R.map(setInclusion, source.apps);
     Meteor.call("sources.update", source._id, source);
+    const app = R.find(R.propEq('appId', appId), source.apps);
+    if (app && app.include) {
+      app.sourceId = source._id;
+      Meteor.call('mainIndex.create', app);
+    } else if (app && !app.include) {
+      Meteor.call('mainIndex.delete', app.appId, source._id);
+    }
   }
 })
 

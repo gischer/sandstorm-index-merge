@@ -1,0 +1,6 @@
+<template name='DisplayApp'>
+  <dt class='list-group-item'>{{app.name}}<button class='btn btn-primary ml-2 js-fetch-app-files' data-app-id='{{app._id }}' >Fetch</button></dt>
+  {{#each component in files}}
+    <dd>{{component.path}}: {{component.status}}</dd>
+  {{/each}}
+</template>
