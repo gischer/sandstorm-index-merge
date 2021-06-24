@@ -6,20 +6,13 @@ import '/imports/api/sandstorm';
 import '/imports/api/sources';
 
 import { exec } from 'child_process';
+import { Config } from '/imports/startup/both/config';
 
 if (Meteor.isServer) {
-  /*
-  exec(`prlimit --nofile`, (error, stderr, stdout) => {
-    console.log(`prlimit(0): ${stderr}`)
-    exec('prlimit --nofile=8192', (error, stderr, stdout) => {
-      if (error) {
-        console.log(`prlimit Error: ${error}`);
-      }
-      if (stderr) {
-        console.log(`prlimit stderr: ${error}`);
-      }
-      console.log(`prlimit: ${stdout}`)
-    })
-  })
-  */
+  import { ensureDirectoryStructure } from '/imports/lib/store';
+
+  ensureDirectoryStructure(Config.localFileRoot + '/apps');
+  ensureDirectoryStructure(Config.localFileRoot + '/packages');
+  ensureDirectoryStructure(Config.localFileRoot + '/images');
+
 }

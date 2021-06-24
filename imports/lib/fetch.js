@@ -24,17 +24,16 @@ export function createHttpInstance(source, sandstormInfo) {
         port: Number(proxyParsed[3]),
       },
       baseURL: CanonicalSource,
-      timeout: 5000,
+      timeout: 100000,
       responseType: 'stream',
       headers: {
-        'Authorization': `Bearer ${sandstormInfo.accessToken}`,
+        'Authorization': `Bearer ${source.accessToken}`,
       }
     })
     return axiosInstance;
   } else {
     return {
       get(filename) {
-        console.log(`simulate get ${filename}`);
         return Promise.resolve(true)
       }
     }
@@ -50,7 +49,7 @@ export function fetchAndStorePackage(app) {
   setStatus(packageFile, 'Fetching');
   return app.fetcher.get(packageFile.path).then((response) => {
     if (!response) {
-      return false;;
+      return false;
     }
     setStatus(packageFile, 'Storing');
     storeStreamTo(response.data, Config.localFileRoot + packageFile.path)
@@ -59,6 +58,7 @@ export function fetchAndStorePackage(app) {
     }));
   })
   .catch((err) => {
+    console.log(`Error fetching package: ${err}`)
     setStatus(packageFile, 'Error', err.toString());
   })
 };
@@ -125,14 +125,11 @@ export function fetchAndStoreImages(app) {
 
 export function fetchAllParts(app, source, sandstormInfo) {
   app.fetcher = createHttpInstance(source, sandstormInfo)
-  console.log(`fetching package for ${app.name}`)
   fetchAndStorePackage(app)
   .then(() => {
-    console.log(`fetching metadata for ${app.name}`)
     return fetchAndStoreMetadata(app)
   })
   .then(() => {
-    console.log(`fetching images for ${app.name}`)
     return fetchAndStoreImages(app);
   })
   .then(() => {
