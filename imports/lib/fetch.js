@@ -47,92 +47,142 @@ export function readFileAsString(filename) {
 export function fetchAndStorePackage(app) {
   const packageFile = Files.findOne({appId: app._id, sourceId: app.sourceId, type: 'package'})
   setStatus(packageFile, 'Fetching');
-  return app.fetcher.get(packageFile.path).then((response) => {
-    if (!response) {
-      return false;
-    }
-    setStatus(packageFile, 'Storing');
-    storeStreamTo(response.data, Config.localFileRoot + packageFile.path)
-    .on('finish', Meteor.bindEnvironment(() => {
-      setStatus(packageFile, 'Fetched');
-    }));
-  })
-  .catch((err) => {
-    console.log(`Error fetching package: ${err}`)
-    setStatus(packageFile, 'Error', err.toString());
+  return new Promise((resolve, reject) => {
+    app.fetcher.get(packageFile.path)
+    .then((response) => {
+      if (!response) {
+        const message = `Package fetch had no response`
+        console.log(message);
+        reject(new Error(message));
+      }
+      setStatus(packageFile, 'Storing');
+      storeStreamTo(response.data, Config.localFileRoot + packageFile.path)
+      .on('finish', Meteor.bindEnvironment(() => {
+        setStatus(packageFile, 'Fetched');
+        resolve(true);
+      }))
+      .on('error', Meteor.bindEnvironment((error) => {
+        const message = `Error storing package: ${error}`
+        setStatus(packageFile, 'Error', error );
+        console.log(message);
+        reject(new Error(message))
+      }))
+    })
+    .catch((err) => {
+      const message = `Error fetching package: ${err}`;
+      console.log(message)
+      setStatus(packageFile, 'Error', err.toString());
+      reject(new Error(message));
+    })
   })
 };
 
 export function fetchAndStoreMetadata(app) {
   const metadataFile = Files.findOne({appId: app._id, sourceId: app.sourceId, type: 'metadata'});
   setStatus(metadataFile, 'Fetching');
-  return app.fetcher.get(metadataFile.path).then((response) => {
+  return new Promise((resolve, reject) => {
+    app.fetcher.get(metadataFile.path).then((response) => {
     if (!response) {
-      return false;
+      const message = `Package fetch had no response`;
+      console.log(message);
+      reject(new Error(message));
     }
     const filename = Config.localFileRoot + metadataFile.path;
     storeStreamTo(response.data, filename)
-    .on('finish', Meteor.bindEnvironment(() => {
-      setStatus(metadataFile, 'Fetched');
-    }));
-  })
-  .catch((err) => {
-    setStatus(metadataFile, 'Error', err.toString())
+      .on('finish', Meteor.bindEnvironment(() => {
+        setStatus(metadataFile, 'Fetched');
+        resolve(true);
+      }))
+      .on('error', Meteor.bindEnvironment((error) => {
+        const message = `Error storing metadata: ${error}`;
+        console.log(message);
+        reject(new Error(message))
+      }));
+    })
+    .catch((err) => {
+      setStatus(metadataFile, 'Error', err.toString())
+      const message = `Error fetching metadata: ${err}`;
+      reject(new Error(message));
+    })
   })
 };
 
 export function fetchAndStoreImage(app, imageFile) {
   setStatus(imageFile, 'Fetching');
-  return app.fetcher.get(imageFile.path).then((response) => {
-    if (!response) return false;
-    setStatus(imageFile, 'Storing');
-    storeStreamTo(response.data, Config.localFileRoot + imageFile.path)
-    .on('finish', Meteor.bindEnvironment(() => {
-      setStatus(imageFile, 'Fetched');
-    }));
-  })
-  .catch((err) => {
-    setStatus(imageFile, 'Error', err.toString())
+  return new Promise((resolve, reject) => {
+    app.fetcher.get(imageFile.path).then((response) => {
+      if (!response) {
+        const message = `Image fetch had no response`;
+        console.log(message);
+        reject(new Error(message));
+      }
+      setStatus(imageFile, 'Storing');
+      storeStreamTo(response.data, Config.localFileRoot + imageFile.path)
+      .on('finish', Meteor.bindEnvironment(() => {
+        setStatus(imageFile, 'Fetched');
+        resolve(true);
+      }))
+      .on('error', Meteor.bindEnvironment((error) => {
+        const message = `Error storing image: ${error}`;
+        console.log(message);
+        setStatus(imageFile, 'Error', error);
+        reject(new Error(message));
+      }));
+    })
+    .catch((err) => {
+      setStatus(imageFile, 'Error', err.toString())
+      const message = `Error fetching image: ${err}`;
+      console.log(message);
+      reject(new Error(message));
+    })
   })
 };
 
 export function fetchAndStoreImages(app) {
-  processMetadata(app)
-  .then((metadata) => {
-    const files = Files.find({appId: app._id, sourceId: app.sourceId, type: 'image'}).fetch();
+  return new Promise((resolve, reject) => {
+    processMetadata(app)
+    .then((metadata) => {
+      const files = Files.find({appId: app._id, sourceId: app.sourceId, type: 'image'}).fetch();
 
-    function getScreenshot(promise, file) {
-      return new Promise((resolve, reject) => {
-        promise.then((result) => {
-          setStatus(file, 'Fetching')
-          return app.fetcher.get(file.path);
-        }).then((response) => {
-          setStatus(file, 'Storing');
-          storeStreamTo(response.data, Config.localFileRoot + file.path)
-          .on('finish', Meteor.bindEnvironment(() => {
-            setStatus(file, 'Fetched');
-            resolve(true);
-          }))
+      function getScreenshot(promise, file) {
+        return new Promise((resolve, reject) => {
+          promise.then((result) => {
+            setStatus(file, 'Fetching')
+            return app.fetcher.get(file.path);
+          }).then((response) => {
+            setStatus(file, 'Storing');
+            storeStreamTo(response.data, Config.localFileRoot + file.path)
+            .on('finish', Meteor.bindEnvironment(() => {
+              setStatus(file, 'Fetched');
+              resolve(true);
+            }))
+          })
+          .catch((err) => {
+            setStatus(file, 'Error', err.toString());
+          })
         })
-        .catch((err) => {
-          setStatus(file, 'Error', err.toString());
-        })
-      })
-    }
-    R.reduce(getScreenshot, Promise.resolve(true), files);
-  });
+      }
+      const result = R.reduce(getScreenshot, Promise.resolve(true), files);
+      result.then(() => {
+        resolve(true);
+      });
+    });
+  })
 };
 
 export function fetchAllParts(app, source, sandstormInfo) {
-  app.fetcher = createHttpInstance(source, sandstormInfo)
-  fetchAndStorePackage(app)
-  .then(() => {
-    return fetchAndStoreMetadata(app)
-  })
-  .then(() => {
-    return fetchAndStoreImages(app);
-  })
-  .then(() => {
-    updateIndex(app);
+  app.fetcher = createHttpInstance(source, sandstormInfo);
+  const packagePromise = fetchAndStorePackage(app);
+  packagePromise.then(() => {
+    fetchAndStoreMetadata(app)
+    .then(() => {
+      fetchAndStoreImages(app)
+      .then(() => {
+        updateIndex(app);
+      })
+    })
+    .catch((err) => {
+      console.log(err);
+    })
   })
 }

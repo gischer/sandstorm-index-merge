@@ -74,7 +74,6 @@ export function processMetadata(app) {
       })
     })
   } else {
-    console.log(`pretending to look for more image files for ${app.name}`);
     return Promise.resolve(true);
   }
 }
@@ -122,7 +121,6 @@ Meteor.methods({
     };
 
     function insertFile(file) {
-      console.log(`inserting file with appId ${file.appId}, sourceId ${file.sourceId}`)
       Files.insert(file);
     }
     // We will need to put screenshots on this list once we fetch metadata.
