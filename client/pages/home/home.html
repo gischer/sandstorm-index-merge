@@ -8,6 +8,12 @@
         This app combines several Sandstorm App Indexes into a single one.
         That single one is available (to Sandstorm installations) at <a href={{indexUrl}}>{{indexUrl}}</a>
       </div>
+      {{#if hasNoSources}}
+      <div class='row'>
+        <p>No sources have been defined yet. Specify a Sandstorm app index to use
+          as a source <a href='/sources'>here</a>.</p>
+      </div>
+      {{/if}}
       <div class='row'>
         <dl class='list-group'>
           {{#each app in apps}}

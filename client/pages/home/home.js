@@ -30,6 +30,11 @@ Template.Home.helpers({
     return Sources.find().fetch();
   },
 
+  hasNoSources() {
+    const count = Sources.find().count();
+    return count == 0;
+  },
+
   apps() {
     if (Template.instance().subscriptionsReady()) {
       return MainIndex.find().fetch();
