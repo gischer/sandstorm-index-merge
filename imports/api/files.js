@@ -18,7 +18,6 @@ export const Files = new Mongo.Collection('files');
 //
 export function setStatus(file, status, errmsg) {
   const myErrmsg = (errmsg ? errmsg : "");
-  console.log(`setting status for ${file.path} to ${status}`)
   Files.update(
     {_id: file._id},
     {$set: {

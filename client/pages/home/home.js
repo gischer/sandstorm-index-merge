@@ -57,4 +57,11 @@ Template.Home.helpers({
 })
 
 Template.Home.events({
-})
+  'click .js-update-index'(event) {
+    Meteor.call('mainIndex.updateAll')
+  },
+
+  'click .js-fetch-all-index'(event) {
+    Meteor.call('mainIndex.fetchAll');
+  }
+});

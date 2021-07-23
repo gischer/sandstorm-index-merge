@@ -10,13 +10,20 @@
       <p>No sources have been defined yet. Specify a Sandstorm app index to use
         as a source <a href='/sources'>here</a>.</p>
     </div>
+    {{else}}
+    <div class='row mb-2'>
+      Update and Retry: <button class='btn btn-primary js-update-index'>Update/Retry</button>
+    </div>
+    <div class='row mb-2'>
+      Re-fetch everything: <button class='btn btn-secondary js-fetch-all-index'>Fetch All</button>
+    </div>
     {{/if}}
-    <div class='row'>
-      <dl class='list-group'>
-        {{#each app in apps}}
-          {{>DisplayApp app=app}}
-        {{/each}}
-      </dl>
+    <div class='row mt-4'>
+      <div class='card-column col-sm-12'>
+          {{#each app in apps}}
+            {{>DisplayApp app=app}}
+          {{/each}}
+      </div>
     </div>
   </div>
 </template>

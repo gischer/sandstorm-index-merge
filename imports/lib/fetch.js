@@ -172,8 +172,7 @@ export function fetchAndStoreImages(app) {
 
 export function fetchAllParts(app, source, sandstormInfo) {
   app.fetcher = createHttpInstance(source, sandstormInfo);
-  const packagePromise = fetchAndStorePackage(app);
-  packagePromise.then(() => {
+  fetchAndStorePackage(app).then(() => {
     fetchAndStoreMetadata(app)
     .then(() => {
       fetchAndStoreImages(app)
@@ -181,8 +180,9 @@ export function fetchAllParts(app, source, sandstormInfo) {
         updateIndex(app);
       })
     })
-    .catch((err) => {
-      console.log(err);
-    })
   })
+  .catch((err) => {
+    console.log(err);
+  })
+
 }

@@ -98,6 +98,22 @@ export function updateIndex(app) {
   })
 }
 
+export function crunchAppStatus(app) {
+  function statusReducer(accum, file) {
+      if (accum === 'In progress') return 'In progress';
+      if (accum === 'Errors') return 'Errors';
+      if (accum === 'Needs update') return 'Needs update';
+      if (accum === 'Ready') {
+        if (file.status === 'Fetching' || file.status === 'Storing') return 'In progress';
+        if (file.status === 'Absent') return 'Needs update';
+        if (file.status === 'Fetched') return 'Ready';
+        return 'Errors';
+      }
+  }
+  const files = Files.find({appId: app._id, sourceId: app.sourceId}).fetch();
+  return R.reduce(statusReducer, 'Ready', files);
+}
+
 if (Meteor.isServer) {
   Meteor.publish("mainIndex", function() {
     return MainIndex.find();
@@ -143,5 +159,38 @@ Meteor.methods({
     const source = Sources.findOne(app.sourceId);
     const sandstormInfo = SandstormInfo.findOne();
     fetchAllParts(app, source, sandstormInfo);
+  },
+
+  "mainIndex.fetchAll"() {
+    const apps = MainIndex.find().fetch();
+    const sandstormInfo = SandstormInfo.findOne();
+
+    function fetchApp(app) {
+      const source = Sources.findOne(app.sourceId);
+      fetchAllParts(app, source, sandstormInfo);
+    }
+
+    R.map(fetchApp, apps);
+  },
+
+  "mainIndex.updateAll"() {
+    console.log('updateAll');
+    const apps = MainIndex.find().fetch();
+    function needsUpdate(app) {
+      const status = crunchAppStatus(app);
+      const result = (status !== 'Ready');
+      console.log(`${app.name} is returning ${result}`)
+      return result;
+    }
+
+    const unreadyApps = R.filter(needsUpdate, apps);
+    const sandstormInfo = SandstormInfo.findOne();
+
+    function fetchApp(app) {
+      const source = Sources.findOne(app.sourceId);
+      fetchAllParts(app, source, sandstormInfo);
+    }
+
+    R.map(fetchApp, unreadyApps);
   }
 })

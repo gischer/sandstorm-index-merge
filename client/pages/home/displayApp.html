@@ -1,6 +1,24 @@
 <template name='DisplayApp'>
-  <dt class='list-group-item'>{{app.name}}<button class='btn btn-primary ml-2 js-fetch-app-files' data-app-id='{{app._id }}' >Fetch</button></dt>
-  {{#each component in files}}
-    <dd>{{component.path}}: {{component.status}}</dd>
-  {{/each}}
+  <div class='card'>
+    <div class='card-header d-flex justify-content-between'>
+      <span>{{app.name}}</span>
+      <i class='{{statusColor}}'>{{appStatus}}</i>
+      {{#if showingDetails }}
+        <a href='#' class='small js-hide-details'>hide details</a>
+      {{else}}
+        <a href='#' class='small js-show-details '>show details</a>
+      {{/if}}
+      <button class='btn btn-primary js-fetch-app-files' data-app-id='{{app._id }}' >Fetch</button>
+    </div>
+
+    {{#if showingDetails }}
+      <div class='card-body'>
+        <ul class='list-group'>
+          {{#each component in files}}
+            <li class='list-group-item'>{{component.path}}: {{component.status}} {{contingentError component}}</li>
+          {{/each}}
+        </ul>
+      </div>
+    {{/if}}
+  </div>
 </template>
