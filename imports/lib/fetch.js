@@ -7,7 +7,7 @@ import { Config } from '/imports/startup/both/config';
 import { Files, setStatus } from '/imports/api/files';
 import { updateIndex, processMetadata } from '/imports/api/mainIndex';
 import { CanonicalSource } from '/imports/api/sources';
-import { storeStreamTo } from '/imports/lib/store';
+import { storeStreamTo, storeBufferTo } from '/imports/lib/store';
 
 
 var AppIndexInstance = null;
@@ -24,7 +24,7 @@ export function createHttpInstance(source, sandstormInfo) {
         port: Number(proxyParsed[3]),
       },
       baseURL: CanonicalSource,
-      timeout: 100000,
+      timeout: 0,
       responseType: 'stream',
       headers: {
         'Authorization': `Bearer ${source.accessToken}`,
@@ -55,18 +55,27 @@ export function fetchAndStorePackage(app) {
         console.log(message);
         reject(new Error(message));
       }
-      setStatus(packageFile, 'Storing');
-      storeStreamTo(response.data, Config.localFileRoot + packageFile.path)
-      .on('finish', Meteor.bindEnvironment(() => {
-        setStatus(packageFile, 'Fetched');
-        resolve(true);
-      }))
-      .on('error', Meteor.bindEnvironment((error) => {
-        const message = `Error storing package: ${error}`
-        setStatus(packageFile, 'Error', error );
-        console.log(message);
-        reject(new Error(message))
-      }))
+      if (app.fetcher.defaults.responseType === 'stream') {
+        setStatus(packageFile, 'Storing');
+        storeStreamTo(response.data, Config.localFileRoot + packageFile.path)
+        .on('finish', Meteor.bindEnvironment(() => {
+          setStatus(packageFile, 'Fetched');
+          resolve(true);
+        }))
+        .on('error', Meteor.bindEnvironment((error) => {
+          const message = `Error storing package: ${error}`
+          setStatus(packageFile, 'Error', error );
+          console.log(message);
+          reject(new Error(message))
+        }))
+      } else {
+        setStatus(packageFile, 'Storing');
+        storeBufferTo(response.data, Config.localFileRoot + packageFile.path)
+        .then(() => {
+          setStatus(packageFile, 'Fetched');
+          resolve(true);
+        });
+      }
     })
     .catch((err) => {
       const message = `Error fetching package: ${err}`;
@@ -82,22 +91,31 @@ export function fetchAndStoreMetadata(app) {
   setStatus(metadataFile, 'Fetching');
   return new Promise((resolve, reject) => {
     app.fetcher.get(metadataFile.path).then((response) => {
-    if (!response) {
-      const message = `Package fetch had no response`;
-      console.log(message);
-      reject(new Error(message));
-    }
-    const filename = Config.localFileRoot + metadataFile.path;
-    storeStreamTo(response.data, filename)
-      .on('finish', Meteor.bindEnvironment(() => {
-        setStatus(metadataFile, 'Fetched');
-        resolve(true);
-      }))
-      .on('error', Meteor.bindEnvironment((error) => {
-        const message = `Error storing metadata: ${error}`;
+      if (!response) {
+        const message = `Package fetch had no response`;
         console.log(message);
-        reject(new Error(message))
-      }));
+        reject(new Error(message));
+      }
+      if (app.fetcher.defaults.responseType === 'stream') {
+        const filename = Config.localFileRoot + metadataFile.path;
+        storeStreamTo(response.data, filename)
+          .on('finish', Meteor.bindEnvironment(() => {
+            setStatus(metadataFile, 'Fetched');
+            resolve(true);
+          }))
+          .on('error', Meteor.bindEnvironment((error) => {
+            const message = `Error storing metadata: ${error}`;
+            console.log(message);
+            reject(new Error(message))
+          }));
+      } else {
+        setStatus(metadataFile, 'Storing');
+        storeBufferTo(JSON.stringify(response.data), Config.localFileRoot + metadataFile.path)
+        .then(() => {
+          setStatus(metadataFile, 'Fetched');
+          resolve(true);
+        });
+      }
     })
     .catch((err) => {
       setStatus(metadataFile, 'Error', err.toString())
@@ -117,17 +135,25 @@ export function fetchAndStoreImage(app, imageFile) {
         reject(new Error(message));
       }
       setStatus(imageFile, 'Storing');
-      storeStreamTo(response.data, Config.localFileRoot + imageFile.path)
-      .on('finish', Meteor.bindEnvironment(() => {
-        setStatus(imageFile, 'Fetched');
-        resolve(true);
-      }))
-      .on('error', Meteor.bindEnvironment((error) => {
-        const message = `Error storing image: ${error}`;
-        console.log(message);
-        setStatus(imageFile, 'Error', error);
-        reject(new Error(message));
-      }));
+      if (app.fetcher.defaults.responseType === 'stream') {
+        storeStreamTo(response.data, Config.localFileRoot + imageFile.path)
+        .on('finish', Meteor.bindEnvironment(() => {
+          setStatus(imageFile, 'Fetched');
+          resolve(true);
+        }))
+        .on('error', Meteor.bindEnvironment((error) => {
+          const message = `Error storing image: ${error}`;
+          console.log(message);
+          setStatus(imageFile, 'Error', error);
+          reject(new Error(message));
+        }));
+      } else {
+        storeBufferTo(response.data, Config.localFileRoot + imageFile.path)
+        .then(() => {
+          setStatus(imageFile, 'Fetched');
+          resolve(true);
+        });
+      }
     })
     .catch((err) => {
       setStatus(imageFile, 'Error', err.toString())
@@ -145,17 +171,27 @@ export function fetchAndStoreImages(app) {
       const files = Files.find({appId: app._id, sourceId: app.sourceId, type: 'image'}).fetch();
 
       function getScreenshot(promise, file) {
+        console.log(`fetching ${file}`)
         return new Promise((resolve, reject) => {
           promise.then((result) => {
             setStatus(file, 'Fetching')
             return app.fetcher.get(file.path);
           }).then((response) => {
+
             setStatus(file, 'Storing');
-            storeStreamTo(response.data, Config.localFileRoot + file.path)
-            .on('finish', Meteor.bindEnvironment(() => {
-              setStatus(file, 'Fetched');
-              resolve(true);
-            }))
+            if (app.fetcher.defaults.responseType === 'stream') {
+              storeStreamTo(response.data, Config.localFileRoot + file.path)
+              .on('finish', Meteor.bindEnvironment(() => {
+                setStatus(file, 'Fetched');
+                resolve(true);
+              }))
+            } else {
+              storeBufferTo(response.data, Config.localFileRoot + file.path)
+              .then(() => {
+                setStatus(file, 'Fetched');
+                resolve(true);
+              });
+            }
           })
           .catch((err) => {
             setStatus(file, 'Error', err.toString());

@@ -58,6 +58,7 @@ export function processMetadata(app) {
   if (Meteor.isServer) {
     const metadataFile = Files.findOne({appId: app._id, sourceId: app.sourceId, type: 'metadata'});
     if (!metadataFile) {
+      console.log('no metadata file');
       return Promise.resolve(true);
     }
     return new Promise((resolve, reject) => {
@@ -71,6 +72,7 @@ export function processMetadata(app) {
         resolve(true);
       }).catch((err) => {
         // Ignore errors here, we just don't get the screenshots?
+        console.log(err);
       })
     })
   } else {
@@ -174,12 +176,10 @@ Meteor.methods({
   },
 
   "mainIndex.updateAll"() {
-    console.log('updateAll');
     const apps = MainIndex.find().fetch();
     function needsUpdate(app) {
       const status = crunchAppStatus(app);
       const result = (status !== 'Ready');
-      console.log(`${app.name} is returning ${result}`)
       return result;
     }
 

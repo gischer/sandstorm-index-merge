@@ -17,9 +17,9 @@ const pkgdef :Spk.PackageDefinition = (
     # This manifest is included in your app package to tell Sandstorm
     # about your app.
 
-    appTitle = (defaultText = "Confluence"),
+    appTitle = (defaultText = "Sandstorm Index Merge"),
 
-    appVersion = 1,  # Increment this for every release.
+    appVersion = 5,  # Increment this for every release.
 
     appMarketingVersion = (defaultText = "0.1.0"),
     # Human-readable representation of appVersion. Should match the way you
