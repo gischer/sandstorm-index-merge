@@ -1,4 +1,7 @@
 <template name='Home'>
+  {{#if hostIsSandstorm }}
+  <p>Host is Sandstorm</p>
+  {{/if}}
   <div class="container">
     {{>Navbar sources=sources}}
     <div class='row mb-4'>
