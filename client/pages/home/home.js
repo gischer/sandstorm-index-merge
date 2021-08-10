@@ -5,15 +5,21 @@ import { SandstormInfo } from '/imports/api/sandstorm';
 import { Sources } from '/imports/api/sources';
 import { MainIndex } from '/imports/api/mainIndex';
 
+import { hostIsSandstorm } from '/imports/lib/sandstorm';
+
 import './home.html';
 import './displayApp';
 
 import '/imports/ui/components/navbar';
 
 Template.Home.onCreated(function() {
-  Meteor.call('sandstorm.initialize');
+  if (hostIsSandstorm()) {
+    Meteor.call('sandstorm.initialize');
+  }
   this.autorun(() => {
-    this.subscribe('sandstorm.info');
+    if (hostIsSandstorm()) {
+      this.subscribe('sandstorm.info');
+    }
     this.subscribe('sources');
     this.subscribe('mainIndex');
     this.subscribe('files');
@@ -45,12 +51,9 @@ Template.Home.helpers({
 
   filesOf(app) {
     if (Template.instance().subscriptionsReady()){
-      console.log(`looking for files with appId ${app._id}, sourceId ${app.sourceId}`)
       const files = Files.find({appId: app._id, sourceId: app.sourceId}).fetch();
-      console.log(files)
       return files
     } else {
-      console.log('subscriptions not ready')
       return [];
     }
   }

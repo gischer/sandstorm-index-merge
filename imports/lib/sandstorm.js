@@ -7,6 +7,10 @@ import { SandstormInfo } from '/imports/api/sandstorm';
 export const AppIndexDescriptor = "EA1QAQEAABEBF1EEAQH/x80lxnnjecgAQAMRCfoAAf9odHRwczovLwJhcHAtaW5kZXguc2FuZHN0P29ybS5pbw=="
 export const AppIndexRpcId = 1;
 
+export function hostIsSandstorm() {
+  return process.env.SANDSTORM === '1'
+};
+
 export function getSandstormInfo(context) {
   if (Meteor.isServer) {
     const sandstormInfo = {};
@@ -59,8 +63,8 @@ export function getAccessToken(source, info) {
 }
 
 export function downloadAppIndex(source) {
-  console.log(`Download app index`)
-  if (Meteor.isServer) {
+  console.log(`Download app index ${source.name}`)
+  if (Meteor.isServer && hostIsSandstorm()) {
     import AXIOS from 'axios';
     const proxyParsed = process.env.HTTP_PROXY.match(urlRegex)
     return AXIOS.get('/apps/index.json', {
@@ -74,6 +78,11 @@ export function downloadAppIndex(source) {
       headers: {
         'Authorization': `Bearer ${source.accessToken}`,
       }
+    })
+  } else if (Meteor.isServer) {
+    import Axios from 'axios';
+    return Axios.get(source.baseUrl + '/apps/index.json', {
+      timeout: 5000,
     })
   } else {
     return Promise.resolve(true);

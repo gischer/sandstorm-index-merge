@@ -4,7 +4,7 @@ import SimpleSchema from 'simpl-schema';
 
 import { Config } from '/imports/startup/both/config';
 import { Sources } from '/imports/api/sources';
-import { getSandstormInfo, getPublicId } from '/imports/lib/sandstorm';
+import { getSandstormInfo, getPublicId, hostIsSandstorm } from '/imports/lib/sandstorm';
 
 // This is a singleton, it contains only one record.
 // We do this as a collection to enable the auto-updating.

@@ -1,7 +1,7 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 
-import { AppIndexRpcId, AppIndexDescriptor } from '/imports/lib/sandstorm';
+import { AppIndexRpcId, AppIndexDescriptor, hostIsSandstorm } from '/imports/lib/sandstorm';
 import { Sources } from '/imports/api/sources';
 
 import './sources.html';
@@ -46,8 +46,13 @@ Template.Sources.events({
   "click button#add-new-source"(event) {
     event.stopPropagation();
     event.preventDefault();
-    console.log('add-new-source clicked');
-    collectClaimToken();
+    if (hostIsSandstorm()) {
+      collectClaimToken();
+    } else {
+      const name = document.getElementById("new-source-name").value;
+      const url = document.getElementById('new-source-base-url').value;
+      Meteor.call("sources.create", name, {baseUrl: url});
+    }
   },
 
   "click a.js-show-error-link"(event) {
@@ -59,7 +64,6 @@ Template.Sources.events({
 
 function collectClaimToken() {
   const name = document.getElementById("new-source-name").value;
-  console.log(`name is ${name}`)
   if (typeof name === 'undefined' || name.length == 0) {
     Template.instance().newSourceErrorMessage.set("A new source must be given a name that allows you to identify it");
     return;
@@ -81,8 +85,7 @@ function collectClaimToken() {
       console.log(error);
       return;
     }
-    console.log(`calling sources.create with ${response.token}`);
-    Meteor.call("sources.create", response.token, name);
+    Meteor.call("sources.create", name, {token: response.token});
     window.removeEventListener("message", handlePowerboxMessage);
   }
 

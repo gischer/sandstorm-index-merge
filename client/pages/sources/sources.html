@@ -6,13 +6,24 @@
         <span class='text-danger'>{{newSourceErrorMessage}}</span>
       </div>
     {{/if}}
+    {{#if hostIsSandstorm }}
+    {{else}}
+    <div class='row mr-2'>
+      <div class='input-group mb-2'>
+        <div class='input-group-prepend'>
+          <span class='input-group-text'>Source Base Url</span>
+        </div>
+        <input type='text' class='form-control' id='new-source-base-url' placeholder='Url of an app-index'>
+      </div>
+    </div>
+    {{/if}}
     <div class='row mr-2'>
       <div class='input-group mb-2'>
         <div class='input-group-prepend'>
           <span class='input-group-text'>Source Name</span>
         </div>
         <input type='text' class='form-control' id='new-source-name' placeholder="Some descriptive name of the source">
-        <button class='btn btn-primary' id='add-new-source'>Add Source</button>
+        <button class='btn btn-primary ml-2' id='add-new-source'>Add Source</button>
       </div>
     </div>
     <div class='row mr-2'>

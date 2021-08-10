@@ -1,6 +1,8 @@
 <template name='Home'>
   {{#if hostIsSandstorm }}
-  <p>Host is Sandstorm</p>
+    <p>Host is Sandstorm</p>
+  {{else}}
+    <p>No Sandstorm host</p>
   {{/if}}
   <div class="container">
     {{>Navbar sources=sources}}
