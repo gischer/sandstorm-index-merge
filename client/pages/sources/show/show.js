@@ -23,8 +23,9 @@ Template.ShowSource.helpers({
   },
 
   isIncluded(app) {
-    return (app.include ? 'checked' : '');
+    return (app.included ? 'checked' : '');
   },
+
 });
 
 Template.ShowSource.events({

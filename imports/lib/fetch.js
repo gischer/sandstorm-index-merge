@@ -8,14 +8,14 @@ import { Files, setStatus } from '/imports/api/files';
 import { updateIndex, processMetadata } from '/imports/api/mainIndex';
 import { CanonicalSource } from '/imports/api/sources';
 import { storeStreamTo, storeBufferTo } from '/imports/lib/store';
-
+import { hostIsSandstorm } from '/imports/lib/sandstorm';
 
 var AppIndexInstance = null;
 
 const urlRegex = /([a-z0-9]+):\/\/([a-z0-9\.]+):([\d]+)/;
 
 export function createHttpInstance(source, sandstormInfo) {
-  if (Meteor.isServer) {
+  if (Meteor.isServer && hostIsSandstorm()) {
     const proxyParsed = process.env.HTTP_PROXY.match(urlRegex)
     const axiosInstance = AXIOS.create({
       proxy: {
@@ -29,6 +29,13 @@ export function createHttpInstance(source, sandstormInfo) {
       headers: {
         'Authorization': `Bearer ${source.accessToken}`,
       }
+    })
+    return axiosInstance;
+  } else if (Meteor.isServer) {
+    const axiosInstance = AXIOS.create({
+      baseURL: source.baseUrl,
+      timeout: 0,
+      responseType: 'stream',
     })
     return axiosInstance;
   } else {

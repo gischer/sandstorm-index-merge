@@ -122,27 +122,32 @@ if (Meteor.isServer) {
   })
 }
 
+export function addFiles(app) {
+  const appId = app._id;
+  const files = [
+    {appId: appId, sourceId: app.sourceId, type: 'package', path: `/packages/${app.packageId}`, status: 'Absent', errmsg: ""},
+    {appId: appId, sourceId: app.sourceId, type: 'metadata', path: `/apps/${app.appId}.json`, status: 'Absent', errmsg: ""},
+  ];
+
+  if (app.imageId) {
+    files.push(
+      {appId: appId, sourceId: app.sourceId, type: 'image', path: `/images/${app.imageId}`, status: 'Absent', errmsg: ""},
+    )
+  };
+
+  function insertFile(file) {
+    Files.insert(file);
+  }
+  // We will need to put screenshots on this list once we fetch metadata.
+  R.map(insertFile, files);
+
+}
+
 Meteor.methods({
   "mainIndex.create"(app) {
     // app is assumed to have source already set.
     const appId = MainIndex.insert(app);
-
-    const files = [
-      {appId: appId, sourceId: app.sourceId, type: 'package', path: `/packages/${app.packageId}`, status: 'Absent', errmsg: ""},
-      {appId: appId, sourceId: app.sourceId, type: 'metadata', path: `/apps/${app.appId}.json`, status: 'Absent', errmsg: ""},
-    ];
-
-    if (app.imageId) {
-      files.push(
-        {appId: appId, sourceId: app.sourceId, type: 'image', path: `/images/${app.imageId}`, status: 'Absent', errmsg: ""},
-      )
-    };
-
-    function insertFile(file) {
-      Files.insert(file);
-    }
-    // We will need to put screenshots on this list once we fetch metadata.
-    R.map(insertFile, files);
+    addFiles(app);
     return appId;
   },
 

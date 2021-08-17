@@ -9,7 +9,11 @@
         <tr><th>Select For inclusion</th><th>App name</th><th>Version</th></tr>
         {{#each app in source.apps}}
           <tr>
+            {{#if hostIsSandstorm }}
             <td><input type='checkbox' class='form-check-input js-include-app-checkbox' data-app-id={{app.appId}} {{isIncluded app}}></td>
+            {{else}}
+            <td><input type='checkbox' class='form-check-input' {{isIncluded app}} disabled></td>
+            {{/if}}
             <td>{{app.name}}</td>
             <td>{{app.version}}</td>
           </tr>

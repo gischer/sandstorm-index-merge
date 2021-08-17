@@ -6,7 +6,7 @@ export const Manifest = {
       name: 'Primary App Index',
       baseUrl: "https://app-index.sandstorm.io",
       apps: [
-        {name: 'Simple ToDos'},
+        {name: 'Simple Todos'},
         {name: 'Roundcube'},
       ],
     },
