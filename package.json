@@ -14,7 +14,8 @@
     "jquery": "^3.6.0",
     "meteor-node-stubs": "^1.0.1",
     "simpl-schema": "^1.12.0",
-    "simple-schema": "^1.1.0"
+    "simple-schema": "^1.1.0",
+    "popperjs": "^2.9.2"
   },
   "meteor": {
     "mainModule": {
