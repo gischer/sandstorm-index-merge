@@ -93,7 +93,7 @@ export function updateIndex(app) {
   }
   const allApps = MainIndex.find().fetch();
   const includedApps = R.reduce(checkApp, [], allApps);
-  const string = JSON.stringify(includedApps);
+  const string = JSON.stringify({apps: includedApps});
   ensureDirectoryStructure(Config.localFileRoot + '/apps/')
   .then(() => {
     storeStringTo(string, Config.localFileRoot + '/apps/index.json');
