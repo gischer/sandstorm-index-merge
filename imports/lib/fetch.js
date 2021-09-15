@@ -189,7 +189,6 @@ export function fetchAndStoreImages(app) {
             if (app.fetcher.defaults.responseType === 'stream') {
               storeStreamTo(response.data, Config.localFileRoot + file.path)
               .on('finish', Meteor.bindEnvironment(() => {
-                response.data.end();
                 setStatus(file, 'Fetched');
                 resolve(true);
               }))
