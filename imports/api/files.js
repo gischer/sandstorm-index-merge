@@ -27,6 +27,11 @@ export function setStatus(file, status, errmsg) {
   });
 }
 
+export function setBytes(file, bytes) {
+  Files.update({_id: file._id},
+  {$set: { bytesUploaded: bytes}})
+}
+
 
 if (Meteor.isServer) {
   Meteor.publish("files", function() {

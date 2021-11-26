@@ -4,7 +4,7 @@ import { promises as FSP } from 'fs';
 import { R } from 'meteor/ramda:ramda';
 
 import { Config } from '/imports/startup/both/config';
-import { Files, setStatus } from '/imports/api/files';
+import { Files, setStatus, setBytes } from '/imports/api/files';
 import { updateIndex, processMetadata } from '/imports/api/mainIndex';
 import { CanonicalSource } from '/imports/api/sources';
 import { storeStreamTo, storeBufferTo } from '/imports/lib/store';
@@ -64,11 +64,15 @@ export function fetchAndStorePackage(app) {
       }
       if (app.fetcher.defaults.responseType === 'stream') {
         setStatus(packageFile, 'Storing');
+        setBytes(packageFile, 0);
         storeStreamTo(response.data, Config.localFileRoot + packageFile.path)
         .on('finish', Meteor.bindEnvironment(() => {
           setStatus(packageFile, 'Fetched');
           resolve(true);
         }))
+//        .on('data', Meteor.bindEnvironment((data) => {
+//          setBytes(packageFile, packageFile.bytesUploaded + data.length);
+//        }))
         .on('error', Meteor.bindEnvironment((error) => {
           const message = `Error storing package: ${error}`
           setStatus(packageFile, 'Error', error );
@@ -189,7 +193,8 @@ export function fetchAndStoreImages(app) {
             if (app.fetcher.defaults.responseType === 'stream') {
               storeStreamTo(response.data, Config.localFileRoot + file.path)
               .on('finish', Meteor.bindEnvironment(() => {
-                response.data.end();
+                //console.log(response.data)
+                //response.data.close();
                 setStatus(file, 'Fetched');
                 resolve(true);
               }))

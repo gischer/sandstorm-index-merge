@@ -4,7 +4,8 @@ import { promises as FSP } from 'fs';
 export function storeStreamTo(stream, filename) {
   if (Meteor.isServer) {
     console.log(`Storing stream to ${filename}`);
-    return stream.pipe(FS.createWriteStream(filename));
+    const writeStream = FS.createWriteStream(filename);
+    return stream.pipe(writeStream);
   } else {
     console.log(`simulating storing stream to ${filename}`)
   }

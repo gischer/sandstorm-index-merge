@@ -92,6 +92,7 @@ export const Manifest = {
       baseUrl: 'https://o9yg4ss2m74ujs6rahta.mansia.net',
       apps: [
         {name: 'Secrets of Toanium'},
+        {name: 'Rokugan Recorder'},
       ],
     }
   ]

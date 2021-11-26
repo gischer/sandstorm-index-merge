@@ -45,6 +45,15 @@ Template.DisplayApp.helpers({
     return 'text-warning';
   },
 
+  componentStatus(file) {
+    console.log(file.status);
+    if (file.status === 'Storing') {
+      return `Storing (${file.bytesUploaded} stored)`;
+    } else {
+      return file.status;
+    }
+  },
+
   showingDetails() {
     return Template.instance().showDetails.get();
   },

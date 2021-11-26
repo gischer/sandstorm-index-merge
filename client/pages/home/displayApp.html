@@ -15,7 +15,7 @@
       <div class='card-body'>
         <ul class='list-group'>
           {{#each component in files}}
-            <li class='list-group-item'>{{component.path}}: {{component.status}} {{contingentError component}}</li>
+            <li class='list-group-item'>{{component.path}}: {{componentStatus component}} {{contingentError component}}</li>
           {{/each}}
         </ul>
       </div>
