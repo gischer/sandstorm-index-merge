@@ -9,6 +9,7 @@ import { exec } from 'child_process';
 import { R } from 'meteor/ramda:ramda';
 import { Config } from '/imports/startup/both/config';
 import { hostIsSandstorm } from '/imports/lib/sandstorm';
+import { scheduleUpdateCheck } from '/imports/lib/timer';
 
 if (Meteor.isServer) {
   import { ensureDirectoryStructure } from '/imports/lib/store';
@@ -17,10 +18,13 @@ if (Meteor.isServer) {
   ensureDirectoryStructure(Config.localFileRoot + '/packages');
   ensureDirectoryStructure(Config.localFileRoot + '/images');
 
-  if (!hostIsSandstorm()) {
+  if (!hostIsSandstorm() && !Config.disableManifest) {
     import { processSources } from './processSources';
     import { Manifest } from './manifest';
 
     processSources(Manifest);
+    scheduleUpdateCheck();
+  } else {
+    scheduleUpdateCheck();
   }
 }

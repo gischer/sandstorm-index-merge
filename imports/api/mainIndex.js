@@ -143,6 +143,13 @@ export function addFiles(app) {
 
 }
 
+export function fetchUpdate(appId) {
+  const app = MainIndex.findOne({appId: appId});
+  const source = Sources.findOne(app.sourceId);
+  const sandstormInfo = SandstormInfo.findOne();
+  return fetchAllParts(app, source, sandstormInfo);
+}
+
 Meteor.methods({
   "mainIndex.create"(app) {
     // app is assumed to have source already set.

@@ -7,7 +7,7 @@ export const Manifest = {
       baseUrl: "https://app-index.sandstorm.io",
       apps: [
         {name: 'Simple Todos'},
-        {name: 'Roundcube'},
+  /*      {name: 'Roundcube'},
         {name: 'Swagger Editor'},
         {name: 'EtherDraw'},
         {name: 'Apache Wave'},
@@ -85,6 +85,7 @@ export const Manifest = {
         {name: 'NodeBB'},
         {name: 'SandForms'},
         {name: 'GitLab'},
+        */
       ],
     },
     {

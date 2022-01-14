@@ -80,8 +80,10 @@ export function downloadAppIndex(source) {
       }
     })
   } else if (Meteor.isServer) {
+    const url = source.baseUrl + '/apps/index.json';
+    console.log(`Downloading from ${url}`)
     import Axios from 'axios';
-    return Axios.get(source.baseUrl + '/apps/index.json', {
+    return Axios.get(url, {
       timeout: 5000,
     })
   } else {

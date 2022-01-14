@@ -66,5 +66,9 @@ Template.Home.events({
 
   'click .js-fetch-all-index'(event) {
     Meteor.call('mainIndex.fetchAll');
+  },
+
+  'click .js-check-for-updates'(event) {
+    const updateList = Meteor.call('sources.checkForUpdates');
   }
 });

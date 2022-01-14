@@ -65,14 +65,18 @@ export function fetchAndStorePackage(app) {
       if (app.fetcher.defaults.responseType === 'stream') {
         setStatus(packageFile, 'Storing');
         setBytes(packageFile, 0);
+
+        response.data.on('data', Meteor.bindEnvironment((data) => {
+ //          setBytes(packageFile, packageFile.bytesUploaded + data.length);
+//           console.log('>>>>>PROGRESS<<<<<<<')
+//           console.log(data.length);
+        }));
+
         storeStreamTo(response.data, Config.localFileRoot + packageFile.path)
         .on('finish', Meteor.bindEnvironment(() => {
           setStatus(packageFile, 'Fetched');
           resolve(true);
         }))
-//        .on('data', Meteor.bindEnvironment((data) => {
-//          setBytes(packageFile, packageFile.bytesUploaded + data.length);
-//        }))
         .on('error', Meteor.bindEnvironment((error) => {
           const message = `Error storing package: ${error}`
           setStatus(packageFile, 'Error', error );
