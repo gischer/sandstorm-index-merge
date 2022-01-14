@@ -223,7 +223,7 @@ export function fetchAndStoreImages(app) {
 
 export function fetchAllParts(app, source, sandstormInfo) {
   app.fetcher = createHttpInstance(source, sandstormInfo);
-  fetchAndStorePackage(app).then(() => {
+  return fetchAndStorePackage(app).then(() => {
     fetchAndStoreMetadata(app)
     .then(() => {
       fetchAndStoreImages(app)

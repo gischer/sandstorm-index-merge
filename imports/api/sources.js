@@ -35,38 +35,10 @@ export const DownloadStates = [
 //  then the sandstorm proxy maps the Auth (Bearer) token to the actual specified
 // source.
 
-export function createUpdateList() {
-  const sources = Sources.find().fetch();
-  function updateListReducer(accum, source) {
-    return R.concat(accum, createUpdateListForSource(source));
-  }
-  const updateList = R.reduce(updateListReducer, [], sources);
-  console.log(updateList);
-  return updateList;
-}
 
 function hasOlderVersion(app) {
   const storedApp = MainIndex.findOne({appId: app.appId});
-  if (!!storedApp) {
-    console.log(`Comparing ${storedApp.name}  ${storedApp.versionNumber} vs ${app.versionNumber}`)
-  }
   return !!storedApp && (storedApp.versionNumber < app.versionNumber);
-}
-
-
-export function createUpdateListForSource(source) {
-  if (Meteor.isServer) {
-    downloadAppIndex(source)
-    .then((result) => {
-      const freshApplist = result.data.apps;
-      console.log()
-      // Now check each one in the sources applist to see if we have an out-of-date version
-      // in the main index
-
-      const updateCandidates = R.filter(hasOlderVersion, freshAppList);
-      return updateCandidates;
-    })
-  }
 }
 
 function downloadAndProcessSource(appsToUpdate, source) {
@@ -95,8 +67,15 @@ export function checkForUpdates() {
 
     R.reduce(checkReducer, Promise.resolve([]), sources)
     .then((apps) => {
-      console.log("Now I can download the updates");
-      console.log(apps);
+      function reportUpdate(app) {
+        console.log(`Will update ${app.name}`)
+      }
+      if (apps.length > 0) {
+        console.log("Updates found:")
+        R.map(reportUpdate, apps);
+      } else {
+        console.log('No updates found')
+      }
       function updateReducer(promise, app) {
         return promise.then(() => {
           return fetchUpdate(app.appId);

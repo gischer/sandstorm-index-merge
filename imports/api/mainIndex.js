@@ -81,11 +81,21 @@ export function processMetadata(app) {
 }
 
 export function updateIndex(app) {
-  function checkApp(goodApps, app) {
-    // Verify that all files have been successfully fetched
+  // We might have been processing an update, so deal with that first.
+  const indexApp = MainIndex.findOne({appId: app.appId});
+  if (filesAllFetched(indexApp)) {
+    console.log(`Update of ${app.name} successfully fetched, updating index`)
+    MainIndex.update({appId: indexApp.appId}, app);
+  }
+
+  function filesAllFetched(app) {
     const files = Files.find({appId: app._id, sourceId: app.sourceId}).fetch();
     const problems = R.reject(R.propEq('status', 'Fetched'), files);
-    if (problems.length == 0) {
+    return (problems.length == 0);
+  }
+
+  function checkApp(goodApps, app) {
+    if (filesAllFetched(app)) {
       return R.append(app, goodApps);
     } else {
       return goodApps;
