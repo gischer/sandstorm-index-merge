@@ -186,7 +186,6 @@ export function fetchAndStoreImages(app) {
       const files = Files.find({appId: app._id, sourceId: app.sourceId, type: 'image'}).fetch();
 
       function getScreenshot(promise, file) {
-        console.log(`fetching ${file}`)
         return new Promise((resolve, reject) => {
           promise.then((result) => {
             setStatus(file, 'Fetching')
