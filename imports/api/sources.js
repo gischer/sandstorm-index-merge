@@ -78,7 +78,7 @@ export function checkForUpdates() {
       }
       function updateReducer(promise, app) {
         return promise.then(() => {
-          return fetchUpdate(app.appId);
+          return fetchUpdate(app);
         })
       }
 

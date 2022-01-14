@@ -153,11 +153,11 @@ export function addFiles(app) {
 
 }
 
-export function fetchUpdate(appId) {
-  const app = MainIndex.findOne({appId: appId});
+export function fetchUpdate(updateApp) {
+  const app = MainIndex.findOne({appId: updateApp.appId});
   const source = Sources.findOne(app.sourceId);
   const sandstormInfo = SandstormInfo.findOne();
-  return fetchAllParts(app, source, sandstormInfo);
+  return fetchAllParts(updateApp, source, sandstormInfo);
 }
 
 Meteor.methods({
