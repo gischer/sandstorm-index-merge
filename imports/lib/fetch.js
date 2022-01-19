@@ -52,7 +52,7 @@ export function readFileAsString(filename) {
 }
 
 export function fetchAndStorePackage(app) {
-  const packageFile = Files.findOne({appId: app._id, sourceId: app.sourceId, type: 'package'})
+  const packageFile = Files.findOne({appId: app._id, appVersionNumber: app.versionNumber, sourceId: app.sourceId, type: 'package'})
   setStatus(packageFile, 'Fetching');
   return new Promise((resolve, reject) => {
     app.fetcher.get(packageFile.path)
@@ -102,7 +102,7 @@ export function fetchAndStorePackage(app) {
 };
 
 export function fetchAndStoreMetadata(app) {
-  const metadataFile = Files.findOne({appId: app._id, sourceId: app.sourceId, type: 'metadata'});
+  const metadataFile = Files.findOne({appId: app._id, appVersionNumber: app.versionNumber, sourceId: app.sourceId, type: 'metadata'});
   setStatus(metadataFile, 'Fetching');
   return new Promise((resolve, reject) => {
     app.fetcher.get(metadataFile.path).then((response) => {
@@ -183,7 +183,7 @@ export function fetchAndStoreImages(app) {
   return new Promise((resolve, reject) => {
     processMetadata(app)
     .then((metadata) => {
-      const files = Files.find({appId: app._id, sourceId: app.sourceId, type: 'image'}).fetch();
+      const files = Files.find({appId: app._id, appVersionNumber: app.versionNumber, sourceId: app.sourceId, type: 'image'}).fetch();
 
       function getScreenshot(promise, file) {
         return new Promise((resolve, reject) => {
