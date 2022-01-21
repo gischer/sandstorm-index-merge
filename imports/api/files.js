@@ -1,4 +1,5 @@
 import { Mongo } from 'meteor/mongo';
+import { FS } from 'fs';
 
 export const Files = new Mongo.Collection('files');
 
@@ -32,6 +33,20 @@ export function setBytes(file, bytes) {
   {$set: { bytesUploaded: bytes}})
 }
 
+export function deleteOldFiles(app) {
+  console.log(`Deleting old files for ${app.name}, version ${app.versionNumber}`);
+  const files = Files.find({appId: app.appId, appVersionNumber: app.versionNumber}).fetch();
+  function processFile(file) {
+    console.log(`Processing file ${file.path} of type ${file.type}`)
+    if (file.type == 'package') {
+      console.log(`Unlinking ${file.path} of type ${file.type}`)
+      FS.unlink(file.path, (err) => {console.log(err)});
+    }
+    console.log(`Removing ${file.path} of type ${file.type}`)
+    Files.remove(file._id);
+  }
+  R.map(processFile, files);
+}
 
 if (Meteor.isServer) {
   Meteor.publish("files", function() {

@@ -2,7 +2,7 @@ import { Mongo } from 'meteor/mongo';
 
 import { Config } from '/imports/startup/both/config';
 
-import { Files } from '/imports/api/files';
+import { Files, deleteOldFiles } from '/imports/api/files';
 import { SandstormInfo } from '/imports/api/sandstorm';
 import { Sources } from '/imports/api/sources';
 import { fetchAllParts, readFileAsString } from '/imports/lib/fetch';
@@ -82,11 +82,23 @@ export function processMetadata(app) {
 
 export function updateIndex(app) {
   // We might have been processing an update, so deal with that first.
+  // We don't have the _id of the app in hand, so we have to do this step first.
   const indexApp = MainIndex.findOne({appId: app.appId, versionNumber: app.versionNumber});
   if (filesAllFetched(indexApp)) {
     console.log(`Update of ${app.name} successfully fetched, updating index`)
     MainIndex.update({appId: indexApp.appId, versionNumber: app.versionNumber}, app);
     console.log(`This is where we delete all the old files and the older version of the app`)
+    // First, let's find all the older versions of the app in th index collection.
+    const allVersions = MainIndex.find({appId: indexApp.appId}).fetch();
+    const oldVersions = R.reject(R.propEq('versionNumber', indexApp.versionNumber), allVersions);
+    // Now for each old version, delete the package file
+    R.map(deleteOldFiles, oldVersions);
+    // now remove all the old versions from the index
+    function removeApp(app) {
+      console.log(`Removing ${app.name}, version ${app.versionNumber}`)
+      MainIndex.remove(app._id);
+    }
+    R.map(removeApp, oldVersions);
   }
 
   function filesAllFetched(app) {
