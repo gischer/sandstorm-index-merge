@@ -168,9 +168,12 @@ export function addFiles(app) {
 
 export function fetchUpdate(updateApp) {
   var existingApp = MainIndex.findOne({appId: updateApp.appId});
-  if (!existingApp || existingApp.versionNumber !== updateApp.versionNumber) {
+  if (!existingApp) {
     // we need to add updateApp to the database
     MainIndex.insert(updateApp);
+  } else if (existingApp.versionNumber < updateApp.versionNumber) {
+    // we need to update app in the database
+    MainIndex.update(updateApp._id, updateApp);
   }
   const packageFile = Files.findOne({appId: updateApp.appId, appVersionNumber: updateApp.versionNumber, type: 'package'});
   if (typeof packageFile == 'undefined') {
