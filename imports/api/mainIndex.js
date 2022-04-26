@@ -188,8 +188,10 @@ export function removeDuplicates() {
   const apps = MainIndex.find().fetch();
   const appIdToId = {};
   function verifyApp(app) {
+    console.log(`Checking ${app.appId} (${app.name})`)
     if (!!appIdToId[app.appId]) {
       MainIndex.remove(app._id);
+      console.log(`Removed duplicate of ${app.appId} (${app.name})`)
     } else {
       appIdToId[app.appId] = true;
     }
