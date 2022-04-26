@@ -195,7 +195,7 @@ export function removeDuplicates() {
     }
   }
 
-  R.map(veryfyApp, apps);
+  R.map(verifyApp, apps);
 }
 
 Meteor.methods({
