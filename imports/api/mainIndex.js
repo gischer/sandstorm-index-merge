@@ -184,6 +184,20 @@ export function fetchUpdate(updateApp) {
   return fetchAllParts(updateApp, source, sandstormInfo);
 }
 
+export function removeDuplicates() {
+  const apps = MainIndex.find().fetch();
+  const appIdToId = {};
+  function verifyApp(app) {
+    if (!!appIdToId[app.appId]) {
+      MainIndex.remove(app._id);
+    } else {
+      appIdToId[app.appId] = true;
+    }
+  }
+
+  R.map(veryfyApp, apps);
+}
+
 Meteor.methods({
   "mainIndex.create"(app) {
     // app is assumed to have source already set.
