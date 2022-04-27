@@ -93,6 +93,7 @@ export function checkForUpdates() {
     .then((apps) => {
       function reportUpdate(app) {
         console.log(`Will update ${app.name}`)
+        console.log(`from ${app.source.baseUrl}`);
       }
       if (apps.length > 0) {
         console.log("Updates found:")
