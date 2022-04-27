@@ -65,13 +65,13 @@ function downloadAndProcessSource(appsToUpdate, source) {
     .then((response) => {
       const requestedList = R.filter(includedInManifest, response.data.apps)
       const filteredList = R.filter(needsUpdate, requestedList);
-      const staleApps = R.concat(appsToUpdate, filteredList);
       function addSource(app) {
         app.sourceId = source._id;
         app.source = source;
         return app;
       }
-      R.map(addSource, staleApps);
+      R.map(addSource, filteredList);
+      const staleApps = R.concat(appsToUpdate, filteredList);
       resolve(staleApps)
     })
     .catch((error) => {
