@@ -37,6 +37,7 @@ export function createHttpInstance(source, sandstormInfo) {
       timeout: 0,
       responseType: 'stream',
     })
+    console.log(`created axiosInstance with baseUrl = ${source.baseUrl}`);
     return axiosInstance;
   } else {
     return {
@@ -54,6 +55,7 @@ export function readFileAsString(filename) {
 export function fetchAndStorePackage(app) {
   const packageFile = Files.findOne({appId: app._id, appVersionNumber: app.versionNumber, sourceId: app.sourceId, type: 'package'})
   setStatus(packageFile, 'Fetching');
+  app.fetcher.baseUrl = packageFile.
   console.log(`Fetching package at ${app.fetcher.baseUrl}+${packageFile.path}`);
   return new Promise((resolve, reject) => {
     app.fetcher.get(packageFile.path)
