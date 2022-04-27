@@ -153,13 +153,13 @@ if (Meteor.isServer) {
 export function addFiles(app) {
   const appId = app._id;
   const files = [
-    {appId: appId, appVersionNumber: app.versionNumber, sourceId: app.sourceId, type: 'package', path: `/packages/${app.packageId}`, status: 'Absent', errmsg: ""},
-    {appId: appId, appVersionNumber: app.versionNumber, sourceId: app.sourceId, type: 'metadata', path: `/apps/${app.appId}.json`, status: 'Absent', errmsg: ""},
+    {appId: appId, appVersionNumber: app.versionNumber, sourceId: app.sourceId, type: 'package', path: `packages/${app.packageId}`, status: 'Absent', errmsg: ""},
+    {appId: appId, appVersionNumber: app.versionNumber, sourceId: app.sourceId, type: 'metadata', path: `apps/${app.appId}.json`, status: 'Absent', errmsg: ""},
   ];
 
   if (app.imageId) {
     files.push(
-      {appId: appId, appVesionNumber: app.versionNumber, sourceId: app.sourceId, type: 'image', path: `/images/${app.imageId}`, status: 'Absent', errmsg: ""},
+      {appId: appId, appVesionNumber: app.versionNumber, sourceId: app.sourceId, type: 'image', path: `images/${app.imageId}`, status: 'Absent', errmsg: ""},
     )
   };
 
@@ -193,7 +193,6 @@ export function removeDuplicates() {
   const apps = MainIndex.find().fetch();
   const appIdToId = {};
   function verifyApp(app) {
-    console.log(`Checking ${app.appId} (${app.name})`)
     if (!!appIdToId[app.appId]) {
       MainIndex.remove(app._id);
       console.log(`Removed duplicate of ${app.appId} (${app.name})`)
