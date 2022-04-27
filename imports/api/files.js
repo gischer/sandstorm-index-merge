@@ -48,6 +48,17 @@ export function deleteOldFiles(app) {
   R.map(processFile, files);
 }
 
+export function fixPaths() {
+  const files = Files.find().fetch();
+  function fixPath(file) {
+    if (file.path[0] == '/') {
+      file.path = file.path.substring(1);
+      Files.update(file._id, file);
+    }
+  }
+  R.map(fixPath, files);
+}
+
 if (Meteor.isServer) {
   Meteor.publish("files", function() {
     return Files.find();
