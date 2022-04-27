@@ -68,6 +68,7 @@ function downloadAndProcessSource(appsToUpdate, source) {
       const staleApps = R.concat(appsToUpdate, filteredList);
       function addSource(app) {
         app.sourceId = source._id;
+        app.source = source;
         return app;
       }
       R.map(addSource, staleApps);
