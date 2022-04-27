@@ -80,6 +80,12 @@ export function processMetadata(app) {
   }
 }
 
+function filesAllFetched(app) {
+  const files = Files.find({appId: app._id, appVersionNumber: app.versionNumber, sourceId: app.sourceId}).fetch();
+  const problems = R.reject(R.propEq('status', 'Fetched'), files);
+  return (problems.length == 0);
+}
+
 export function updateIndex(app) {
   // We might have been processing an update, so deal with that first.
   // We don't have the _id of the app in hand, so we have to do this step first.
@@ -101,12 +107,10 @@ export function updateIndex(app) {
     R.map(removeApp, oldVersions);
   }
 
-  function filesAllFetched(app) {
-    const files = Files.find({appId: app._id, appVersionNumber: app.versionNumber, sourceId: app.sourceId}).fetch();
-    const problems = R.reject(R.propEq('status', 'Fetched'), files);
-    return (problems.length == 0);
-  }
+  writeIndex();
+}
 
+export function writeIndex() {
   function checkApp(goodApps, app) {
     if (filesAllFetched(app)) {
       return R.append(app, goodApps);
@@ -114,6 +118,7 @@ export function updateIndex(app) {
       return goodApps;
     }
   }
+
   const allApps = MainIndex.find().fetch();
   const includedApps = R.reduce(checkApp, [], allApps);
   const string = JSON.stringify({apps: includedApps});
@@ -198,6 +203,7 @@ export function removeDuplicates() {
   }
 
   R.map(verifyApp, apps);
+  writeIndex();
 }
 
 Meteor.methods({
