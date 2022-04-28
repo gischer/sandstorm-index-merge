@@ -81,7 +81,7 @@ export function processMetadata(app) {
 }
 
 function filesAllFetched(app) {
-  const files = Files.find({appId: app._id, appVersionNumber: app.versionNumber, sourceId: app.sourceId}).fetch();
+  const files = Files.find({appId: app.appId, appVersionNumber: app.versionNumber, sourceId: app.sourceId}).fetch();
   const problems = R.reject(R.propEq('status', 'Fetched'), files);
   return (problems.length == 0);
 }
@@ -89,7 +89,7 @@ function filesAllFetched(app) {
 export function updateIndex(app) {
   // We might have been processing an update, so deal with that first.
   // We don't have the _id of the app in hand, so we have to do this step first.
-  const indexApp = MainIndex.findOne({appId: app.appId, versionNumber: app.versionNumber});
+  const indexApp = MainIndex.findOne({appId: app.appId});
   if (filesAllFetched(indexApp)) {
     console.log(`Update of ${app.name} successfully fetched, updating index`)
     MainIndex.update({appId: indexApp.appId, versionNumber: app.versionNumber}, app);
