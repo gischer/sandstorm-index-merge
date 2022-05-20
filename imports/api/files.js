@@ -33,7 +33,7 @@ export function setBytes(file, bytes) {
   {$set: { bytesUploaded: bytes}})
 }
 
-export function deleteOldFiles(app) {
+export function deleteAssociatedFiles(app) {
   console.log(`Deleting old files for ${app.name}, version ${app.versionNumber}`);
   const files = Files.find({appId: app.appId, appVersionNumber: app.versionNumber}).fetch();
   function processFile(file) {

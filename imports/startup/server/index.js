@@ -22,6 +22,7 @@ if (Meteor.isServer) {
   fixPaths()
 
   if (!hostIsSandstorm() && !Config.disableManifest) {
+    import { removeAppByName } from '/imports/api/mainIndex';
     import { processSources } from './processSources';
     import { Manifest } from './manifest';
 

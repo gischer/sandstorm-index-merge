@@ -35,10 +35,10 @@ export function downloadSource(sourceRef) {
       reject(false);
     })
     .then(() => {
-      console.log(`checking for inclusion with ${id}`)
       const src = Sources.findOne(id);
-      console.log(src)
       const includedApps = R.filter(appIsIncluded, src.apps)
+      console.log(`Apps included in ${source.name}:`);
+      console.log(includedApps);
       function addApp(app) {
         app.sourceId = src._id;
         app._id = MainIndex.insert(app);

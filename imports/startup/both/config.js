@@ -1,6 +1,6 @@
 
 export const Config = {
   localFileRoot: '/var/www/',
-  disableManifest: true,
+  disableManifest: false,
   updateCheckInterval: 360000,
 }
