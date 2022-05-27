@@ -96,8 +96,8 @@ export function updateIndex(app) {
   // We don't have the _id of the app in hand, so we have to do this step first.
   const indexApp = MainIndex.findOne({appId: app.appId});
   if (filesAllFetched(indexApp)) {
-    console.log(`Update of ${app.name} successfully fetched, updating index`)
-    MainIndex.update({appId: indexApp.appId, versionNumber: app.versionNumber}, app);
+    console.log(`Update of ${app.name} successfully fetched, updating index, vn = ${app.versionNumber}`)
+    MainIndex.update(app._id, app);
     console.log(`This is where we delete all the old files and the older version of the app`)
     // First, let's find all the older versions of the app in th index collection.
     const allVersions = MainIndex.find({appId: indexApp.appId}).fetch();
@@ -187,7 +187,7 @@ export function fetchUpdate(updateApp) {
     MainIndex.insert(updateApp);
   } else if (existingApp.versionNumber < updateApp.versionNumber) {
     // we need to update app in the database
-    MainIndex.update(updateApp._id, updateApp);
+    MainIndex.update(existingApp._id, updateApp);
   }
   const packageFile = Files.findOne({appId: updateApp.appId, appVersionNumber: updateApp.versionNumber, type: 'package'});
   if (typeof packageFile == 'undefined') {
