@@ -168,7 +168,7 @@ export function addFiles(app) {
 
   if (app.imageId) {
     files.push(
-      {appId: appId, appVesionNumber: app.versionNumber, sourceId: app.sourceId, type: 'image', path: `images/${app.imageId}`, status: 'Absent', errmsg: ""},
+      {appId: appId, appVersionNumber: app.versionNumber, sourceId: app.sourceId, type: 'image', path: `images/${app.imageId}`, status: 'Absent', errmsg: ""},
     )
   };
 
